@@ -39,9 +39,9 @@ if __name__ == "__main__":
     # The dict will have a list as values
     md5_dict = defaultdict(list)
     filelist = [] 
-    tmplist = ["checksum", "filename", "path", "size", "owner", "size", "accesstime", "modifytime", "createtime"]
+    tmplist = ["checksum", "filename", "path", "size", "owner", "accesstime", "modifytime", "createtime"]
     filelist.append(tmplist)
-    #details structure is checksum, filename, path, size, owner, size, accesstime, modifytime, createtime
+    #details structure is checksum, filename, path, size, owner, accesstime, modifytime, createtime
 
     file_types_inscope = ["ppt", "pptx", "pdf", "txt", "html",
                           "mp4", "doc", "docx", "xls", "xlsx"]
