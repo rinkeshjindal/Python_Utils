@@ -14,8 +14,8 @@ import pandas as pd
 import shutil
 #from builtins import False
 
-src_folder = "C:/Users/rinkesh_jindal/Downloads"
-
+#src_folder = "C:/Users/rinkesh_jindal/Downloads"
+src_folder = "\\\\readyshare\JindalShare"
 
 def generate_md5(fname, chunk_size=1024):
     """
@@ -45,8 +45,7 @@ if __name__ == "__main__":
     filelist = pd.DataFrame(columns=["checksum", "filename", "path", "size", "owner", "accesstime", "modifytime", "createtime"])
     #details structure is checksum, filename, path, size, owner, accesstime, modifytime, createtime
     
-    file_types_inscope = ["ppt", "pptx", "pdf", "txt", "html",
-                          "mp4", "doc", "docx", "xls", "xlsx"]
+    file_types_inscope = ["ppt", "pptx", "pdf", "txt", "html", "DAT", "jpg", "jpeg", "bmp", "doc", "docx", "xls", "xlsx"]
 
     # Walk through all files and folders within directory
     for path, dirs, files in os.walk(src_folder):
@@ -57,21 +56,25 @@ if __name__ == "__main__":
                 
                  # The path variable gets updated for each subfolder
                 file_path = os.path.join(os.path.abspath(path), each_file)
-                #print( file_path)
+                print( file_path)
                 
                 finfo=os.stat(file_path)
                 #print( finfo)
                 #print(type(finfo))
                 md5_code = generate_md5(file_path)
                 #if md5_code in filelist[:,0]:
-                tmplist = [generate_md5(file_path)]
-                tmplist.append(each_file)
-                tmplist.append(path)
-                tmplist.append(finfo[stat.ST_SIZE])
-                tmplist.append(finfo[stat.ST_UID])
-                tmplist.append(time.asctime(time.localtime(finfo[stat.ST_ATIME])))
-                tmplist.append(time.asctime(time.localtime(finfo[stat.ST_MTIME])))
-                tmplist.append(time.asctime(time.localtime(finfo[stat.ST_CTIME])))
+                try:
+                    tmplist = [generate_md5(file_path)]
+                    tmplist.append(each_file)
+                    tmplist.append(path)
+                    tmplist.append(finfo[stat.ST_SIZE])
+                    tmplist.append(finfo[stat.ST_UID])
+                    tmplist.append(time.asctime(time.localtime(finfo[stat.ST_ATIME])))
+                    tmplist.append(time.asctime(time.localtime(finfo[stat.ST_MTIME])))
+                    tmplist.append(time.asctime(time.localtime(finfo[stat.ST_CTIME])))
+                except:
+                    print(file_path + " Error with file attributes")
+                    pass
                 #print(tmplist)
                 filelist.loc[len(filelist)] = tmplist
                 #filelist.append(tmplist)
