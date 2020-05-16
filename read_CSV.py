@@ -1,3 +1,4 @@
+
 #-------------------------------------------------------------
 #    read_CSV.py
 #    Deletes all empty folders under a given path.
@@ -32,7 +33,15 @@ try:
 #     print(cond.head(5))
 #     print(cond.shape)
 #    all_files.drop(all_files[cond].index, inplace = True)
-    all_files.drop(duplicate_files.index, inplace = True)
+
+#values of duplicate_files columns 'checksum' and 'filename' that will be used to filter df1
+    idxs = list(zip(duplicate_files.checksum.values, duplicate_files.filename.values, duplicate_files.path.values))
+
+#so all_files is filtered based on the values present in columns of df2 (idxs)
+    all_files = all_files[~pd.Series(list(zip(all_files.checksum, all_files.filename, all_files.path)), index=all_files.index).isin(idxs)]
+    
+    #Matching on index in two df
+    #all_files.drop(duplicate_files.index, inplace = True)
 except:
     print("either all files or duplicates not exists")
     pass
