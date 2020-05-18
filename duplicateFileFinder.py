@@ -15,7 +15,7 @@ import shutil
 #from builtins import False
 
 #src_folder = "C:/Users/rinkesh_jindal/Downloads"
-src_folder = "\\\\readyshare\JindalShare"
+src_folder = "D:/Online Data/temp"
 
 def generate_md5(fname, chunk_size=1024):
     """
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     filelist = pd.DataFrame(columns=["checksum", "filename", "path", "size", "owner", "accesstime", "modifytime", "createtime"])
     #details structure is checksum, filename, path, size, owner, accesstime, modifytime, createtime
     
-    file_types_inscope = ["ppt", "pptx", "pdf", "txt", "html", "DAT", "jpg", "jpeg", "bmp", "doc", "docx", "xls", "xlsx"]
+    file_types_inscope = ["ppt", "pptx", "pdf", "txt", "mp4", "html", "DAT", "jpg", "jpeg", "bmp", "doc", "docx", "xls", "xlsx"]
 
     # Walk through all files and folders within directory
     for path, dirs, files in os.walk(src_folder):
@@ -88,7 +88,10 @@ if __name__ == "__main__":
     dup_df.to_csv(src_folder +"/duplicates.csv")
     
     destination_folder = src_folder + "/temp"
-    
+    if not os.path.isdir(destination_folder):
+        os.makedirs(destination_folder)
+        print("created folder : ", destination_folder)
+
     for _, row in dup_df.iterrows():
         src_file = row.path + "/"+ row.filename
         print(src_file)

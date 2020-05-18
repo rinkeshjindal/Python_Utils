@@ -12,6 +12,9 @@
 
 import sys, os
 
+ctr_dir = 0
+ctr_files = 0
+
 if len(sys.argv) == 1:
     # Print usage
     print("Usage: del_EmptyFilesFolders.py ""C:/Test""")
@@ -23,6 +26,7 @@ else:
                     print( "Deleting", os.path.join(root, name) )
                     try:
                         os.rmdir( os.path.join(root, name) ) #Delete Empty Folder
+                        ctr_dir = ctr_dir + 1
                     except:
                         print( "FAILED :", os.path.join(root, name) )
                         pass
@@ -36,8 +40,11 @@ else:
                     print( "Deleting", full_name  )
                     try:
                         os.remove(full_name)    #Delete Empty File
+                        ctr_files = ctr_files + 1
                     except:
                         print( "FAILED :", full_name )
                         pass
             except:
                 pass
+    print("dir removed: "+ str(ctr_dir))
+    print("Files removed: " + str(ctr_files))
