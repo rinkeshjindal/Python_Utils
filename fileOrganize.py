@@ -1,7 +1,9 @@
 import os, sys
-from pathlib import Path 
+import time
+from pathlib import Path
 import shutil
 from _ast import If
+from time import gmtime
 
 DIRECTORIES = { 
     "HTML": ["html5", "html", "htm", "xhtml"], 
@@ -30,30 +32,38 @@ FILE_FORMATS = {file_format: directory
                 for directory, file_formats in DIRECTORIES.items() 
                 for file_format in file_formats} 
 
-def organize_junk(scr_folder):
+def organize_files(scr_folder):
     for root, dirs, files in os.walk(scr_folder):
         # print("Analyzing {}".format(path))
         for each_file in files:
             #print("file: "+each_file)
             src_file = os.path.join(root, each_file)
-            file_format = src_file.split(".")[-1].lower()
+            file_format = each_file.split(".")[-1].lower()
+            file_name = each_file.split(".")[0]
+
+            create_time = os.path.getctime(src_file)
+            str_create_time = time.strftime("%Y%b%d", gmtime(create_time)) #Create Date Format
+            
+            if (str_create_time == file_name.rpartition('_')[2]):    #add date to filename if not already
+                new_file_name = each_file
+            else:
+                new_file_name = file_name +"_" + str_create_time +"."+file_format
+            
             p = Path(root)
             if file_format in FILE_FORMATS:
                 f = FILE_FORMATS[file_format]
                 cur_dir = root.rpartition('\\')[2]
-                if cur_dir != f:
+                if cur_dir != f: #check folder if already exists
                     destination_folder = Path.joinpath(p, f)
                     destination_folder.mkdir(exist_ok=True)
+                else:
+                    destination_folder = root
+                
+                destination_folder = str(destination_folder) + "\\" + new_file_name
+
+                if src_file != destination_folder: #move / rename files
                     shutil.move(src_file, destination_folder, copy_function='copy2')
                     print("moved: " + each_file)                    
-                #file_path.rename(directory_path.joinpath(file_path))
-
-        # for dir in os.scandir():
-        #     print("inside for: "+ dir)
-        #     try:
-        #         os.rmdir(dir)
-        #     except:
-        #         pass
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -62,5 +72,5 @@ if __name__ == "__main__":
     else:
         src_path = sys.argv[1]
         
-    organize_junk(src_path)
+    organize_files(src_path)
     print("Congrats, all files are organized in respective folders")
