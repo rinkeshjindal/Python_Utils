@@ -25,7 +25,6 @@ DIRECTORIES = {
     "XML": ["xml"], 
     "EXE": ["exe"], 
     "SHELL": ["sh"] 
-
 } 
 
 FILE_FORMATS = {file_format: directory 

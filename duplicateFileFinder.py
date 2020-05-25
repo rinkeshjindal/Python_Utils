@@ -4,7 +4,7 @@ Input Source folder, traverse through all files within the folder and subfolders
 and get list of all files that are duplicates using md5 checcksum for each file 
 """
 
-import os
+import os, sys
 import hashlib
 from collections import defaultdict
 import csv
@@ -15,7 +15,7 @@ import shutil
 #from builtins import False
 
 #src_folder = "C:/Users/rinkesh_jindal/Downloads"
-src_folder = "D:/Online Data/temp"
+#src_folder = "C:/Users"
 
 def generate_md5(fname, chunk_size=1024):
     """
@@ -38,6 +38,12 @@ if __name__ == "__main__":
     """
     Starting block of script
     """
+    if len(sys.argv) == 1:
+        # Print usage
+        print("Usage: duplicateFileFinder.py ""C:/Test""")
+        exit
+    else:
+        src_folder = sys.argv[1]
 
     # The dict will have a list as values
     md5_dict = defaultdict(list)
@@ -46,18 +52,20 @@ if __name__ == "__main__":
     #details structure is checksum, filename, path, size, owner, accesstime, modifytime, createtime
     
     file_types_inscope = ["ppt", "pptx", "pdf", "txt", "mp4", "html", "DAT", "jpg", "jpeg", "bmp", "doc", "docx", "xls", "xlsx"]
+    file_types_not_inscope = ["pst"]
 
     # Walk through all files and folders within directory
     for path, dirs, files in os.walk(src_folder):
         #print("Analyzing {}".format(path))
         for each_file in files:
-            if each_file.split(".")[-1].lower() in file_types_inscope:
+            #if each_file.split(".")[-1].lower() in file_types_inscope:
+            if each_file.split(".")[-1].lower() not in file_types_not_inscope:
                 tmplist = []
-                
+
                  # The path variable gets updated for each subfolder
                 file_path = os.path.join(os.path.abspath(path), each_file)
                 print( file_path)
-                
+
                 finfo=os.stat(file_path)
                 #print( finfo)
                 #print(type(finfo))
@@ -76,8 +84,11 @@ if __name__ == "__main__":
                     print(file_path + " Error with file attributes")
                     pass
                 #print(tmplist)
-                filelist.loc[len(filelist)] = tmplist
-                #filelist.append(tmplist)
+                try:
+                    filelist.loc[len(filelist)] = tmplist
+                except:
+                    print(file_path + " unable to add to all_file")
+            #filelist.append(tmplist)
 
     #print(filelist)
     # Write the list of duplicate files to csv file
