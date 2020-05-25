@@ -75,17 +75,15 @@ def organize_files(scr_folder, file_cat, target_folder):
                     final_path = str(destination_folder) + "\\" + new_file_name
 
                     if src_file != final_path: #move / rename files
-                        try:
-                            print("before move")
+                            if Path(final_path).exists():
+                                base_filename = new_file_name.split(".")[0]
+                                ctr = 1
+                                while(Path(final_path).exists()):
+                                        new_file_name = base_filename + "_copy" + str(ctr)+ "." + file_format
+                                        final_path = str(destination_folder) + "\\" + new_file_name
+                                        ctr = ctr + 1
                             shutil.move(src_file, final_path, copy_function='copy2')
-                        #except (IOError, os.error) as e:
-                        except IOError as err:
-                            print("exception")
-                            exctype, value = sys.exc_info()[:2]
-                            print("test")
-                            print(value)
-
-                        print("moved: " + each_file)
+                            print('moved file')
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
