@@ -46,9 +46,9 @@ folder = {'Visa': ['visa','797'],
 
 def search(values, file_name):
     for k in values:
-        print(file_name.lower())
+        #print(file_name.lower())
         for v in values[k]:
-            print("v: " + v.lower())
+            #print("v: " + v.lower())
             if v.lower() in file_name.lower():
                 return k
     return None
