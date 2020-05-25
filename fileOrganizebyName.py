@@ -5,6 +5,7 @@ import shutil
 from shutil import Error
 from _ast import If
 from time import gmtime
+from json.decoder import NaN
 
 DIRECTORIES = {
     "HTML": ["html5", "html", "htm", "xhtml"], 
@@ -32,24 +33,44 @@ FILE_FORMATS = {file_format: directory
                 for directory, file_formats in DIRECTORIES.items() 
                 for file_format in file_formats} 
 
-def organize_files(scr_folder, file_cat, target_folder):
-    file_cat = file_cat.lower()
+
+folder = {'Visa': ['visa','797'], 
+          'passport': ['passport'],
+          'Alisha': ['Alisha', 'jiya'],
+          'Pooja': ['Pooja', 'rimpy'],
+          'Sharvil': ['Sharvil'],
+          'resume': ['resume', 'profile', 'it_prof'],
+          'education': ['education', 'MCA', 'Graduation'],
+          'finance': ['tax', 'statement_', 'savings', 'mortgage'],
+          }
+
+def search(values, file_name):
+    for k in values:
+        print(file_name.lower())
+        for v in values[k]:
+            print("v: " + v.lower())
+            if v.lower() in file_name.lower():
+                return k
+    return None
+
+def organize_files(scr_folder, target_folder):
     for root, dirs, files in os.walk(scr_folder):
         for name in dirs:
-            print(root+"/"+name)
-            if file_cat in name.lower():
+            #print(root+"/"+name)
+            cat_folder = search(folder, name)
+            if cat_folder != None:
                 src_dir = os.path.join(root, name)
                 try:
-                    shutil.move(src_dir, target_folder+"/"+name, copy_function='copy2')
+                    shutil.move(src_dir, target_folder+"/"+cat_folder+"/"+name, copy_function='copy2')
                     print("moved: " + name)
                 except:
                     print("unable to move dir: "+ name)
                     pass
 
-        # print("Analyzing {}".format(path))
         for each_file in files:
-            if file_cat in each_file.lower():
-                print("file: "+each_file)
+            cat_folder = search(folder, each_file)
+            if cat_folder != None:
+                print("file: "+cat_folder)
                 src_file = os.path.join(root, each_file)
                 file_format = each_file.split(".")[-1].lower()
                 file_name = each_file.split(".")[0]
@@ -63,6 +84,12 @@ def organize_files(scr_folder, file_cat, target_folder):
                     new_file_name = file_name +"_" + str_create_time +"."+file_format
 
                 p = Path(target_folder)
+                if target_folder.rpartition('\\')[2] != cat_folder: #check folder if already exists
+                    destination_folder = Path.joinpath(p, cat_folder)
+                    destination_folder.mkdir(exist_ok=True)
+                else:
+                    destination_folder = target_folder
+                p = Path(destination_folder)
                 if file_format in FILE_FORMATS:
                     f = FILE_FORMATS[file_format]
                     cur_dir = target_folder.rpartition('\\')[2]
@@ -86,12 +113,11 @@ def organize_files(scr_folder, file_cat, target_folder):
                             print('moved file')
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         # Print usage
         print("Usage: del_EmptyFilesFolders.py ""C:/Test""")
     else:
         src_path = sys.argv[1]
-        file_cat = sys.argv[2]
-        target_folder = sys.argv[3]
-    organize_files(src_path, file_cat, target_folder)
+        target_folder = sys.argv[2]
+    organize_files(src_path, target_folder)
     print("Congrats, all files are organized in respective folders")
