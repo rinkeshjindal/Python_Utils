@@ -40,10 +40,10 @@ folder = {'Visa': ['visa','797'],
           'Alisha': ['Alisha', 'jiya'],
           'Pooja': ['Pooja', 'rimpy'],
           'Sharvil': ['Sharvil'],
-          'resume': ['resume', 'it_prof'],
           'education': ['education', 'MCA', 'Graduation'],
-          'finance': ['tax', 'statement_', 'savings', 'mortgage'],
-          'salary': ['salary', 'payslip','paycheck']
+          'finance': ['tax', 'statement_', 'savings', 'mortgage', 'bank'],
+          'salary': ['salary', 'payslip','paycheck'],
+          'resume': ['resume', 'it_prof'],
           }
 
 def search(values, file_name):
@@ -65,7 +65,7 @@ def organize_files(scr_folder, target_folder):
                 p = Path(target_folder)
                 if target_folder.rpartition('\\')[2] != cat_folder:  # check folder if already exists
                     destination_folder = Path.joinpath(p, cat_folder)
-                    destination_folder.mkdir(exist_ok=True)
+                    destination_folder.mkdir(parents=True, exist_ok=True)
                     print("Created folder: "+str(destination_folder))
                 else:
                     destination_folder = target_folder
@@ -94,24 +94,20 @@ def organize_files(scr_folder, target_folder):
                         new_file_name = each_file
                     else:
                         new_file_name = file_name +"_" + str_create_time +"."+file_format
-                    #print("target_folder: " + str(target_folder))
-                    p = Path(target_folder)
-                    if target_folder.rpartition('\\')[2] != cat_folder: #check category folder if already exists
-                        destination_folder = Path.joinpath(p, cat_folder)
-                        destination_folder.mkdir(exist_ok=True)
+                    
+                    if root.rpartition('\\')[2] != cat_folder: #check category folder if already exists
+                        destination_folder = root + "\\" + cat_folder
                     else:
                         destination_folder = target_folder
-                    #print("destination_folder: "+str(file_format))
-                    p = Path(str(destination_folder))
 
                     f = FILE_FORMATS[file_format]
-                    cur_dir = str(destination_folder).rpartition('\\')[2]
+                    cur_dir = destination_folder.rpartition('\\')[2]
                     if cur_dir != f: #check fileFormat folder if already exists
                         destination_folder = Path.joinpath(p, f)
-                        destination_folder.mkdir(exist_ok=True)
+                        destination_folder.mkdir(parents=True, exist_ok=True)
                     else:
                         destination_folder = destination_folder
-                    #print("before Final_folder: " + str(destination_folder))
+
                     final_path = str(destination_folder) + "\\" + new_file_name
                     #print("final_path: "+str(final_path))
                     if src_file != final_path: #move / rename files
